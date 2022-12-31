@@ -1852,11 +1852,11 @@ ____________________________________________________________________
 ____________________________________________________________________
 
 # Authentication and OAuth
-
+____________________________________________________________________
 Authentication is the process used by applications to determine and confirm identities of users. It ensures that the correct content is shown to users. More importantly, it ensures that incorrect content is secured and unavailable to unauthorized users.
 
 In this article, we’ll discuss a few of the common design patterns for these interactions. You’ll need to have some basic understanding of HTTP requests, since these methods all use HTTP requests to exchange information.
-
+____________________________________________________________________
 ## Password Authentication 
 
 The most common implementation of authentication requires a user to input their username or email and a password. The application’s server then checks the supplied credentials to determine if the user exists and if the supplied password is correct. If the credentials are correct, the user is logged in and able to use the application as that user.
@@ -1866,7 +1866,7 @@ Typically, upon a successful login, the application will respond with an authent
 This token generally expires after a certain amount of time, ensuring the correct user is using the application over time as well.
 
 ## API Keys
-
+____________________________________________________________________
 While it is common to think of authentication as the interaction between a human user and an application, sometimes the user is another application.
 
 Many apps expose interfaces to their information in the form of an API (application program interface). For example, the [Spotify API](https://developer.spotify.com/web-api/) provides endpoints for almost all of its functionality. This allows applications to fetch data from the Spotify music catalog and manage user’s playlists and saved music.
@@ -1878,7 +1878,7 @@ The most basic pattern for API access from another application is using an API k
 Public APIs usually provide a developer portal where you can register your application and generate a corresponding API key. This key is then unique to your application. When your application makes a request, this key is sent along with it. The API can then verify that your application is allowed access and provide the correct response based on the permission level of your application.
 
 The API can track what type and frequency of requests each application is making. This data can be used to [throttle requests](https://en.wikipedia.org/wiki/Throttling_process_(computing)) from a specific application to a pre-defined level of service. This prevents applications from spamming an endpoint or abusing user data, since the API can easily block that application’s API key and prevent further malicious use of the API by that application.
-
+____________________________________________________________________
 ## OAuth
 
 For many applications, a generic developer-level API key is not sufficient. As mentioned earlier, APIs sometimes have the ability to provide access to user-level data. However, most services only provide this private data if the user enables it.
@@ -1896,7 +1896,7 @@ An open standard is a publicly available definition of how some functionality sh
 As a result, each API is required to implement their own version of OAuth and therefore may have a slightly different implementation or flow. However, they’re all based around the same OAuth specification.
 
 This can make using a new OAuth API a little more frustrating. However, with time you will begin noticing the similarities between API authentication flows and be able to use them in your applications with increasing ease. Below is a summary of the standard OAuth flow.
-
+____________________________________________________________________
 ### Generic OAuth Flow
 
 Many applications implementing OAuth will first ask the user to select which service they would like to use for credentials:
@@ -1908,7 +1908,7 @@ After selecting the service, the user will be redirected to the service to login
 If the user confirms they want to allow this access, they will be redirected back to the original site, along with an access token. This access token is then saved by the originating application.
 
 Like a developer API key, this access token will be included on requests by the application to prove that the user has granted access and enable access to the appropriate content for that user. When a user returns to the application, the token will be retrieved and they will not have to re-authenticate.
-
+____________________________________________________________________
 ### OAuth 2
 
 Since OAuth evolved out of Twitter, there were important use cases not originally considered as part of the specification. Eventually, this led to the creation of a new version of the specification, called OAuth 2.
@@ -1916,7 +1916,7 @@ Since OAuth evolved out of Twitter, there were important use cases not originall
 Among other improvements, OAuth 2 allows for different authentication flows depending on the specific application requesting access and the level of access being requested.
 
 OAuth 2 is still an open standard, so each API will have its own flow based on its particular implementation. Below, we’ll discuss a few of the common OAuth 2 flows and how they are used.
-
+____________________________________________________________________
 ### Client Credentials Grant
 
 Sometimes an application will not need access to user information but may implement the added security and consistency of the OAuth 2 specification. This type of grant is used to access application-level data (similar to the developer API key above) and the end user does not participate in this flow.
@@ -1932,7 +1932,7 @@ Similar to the previously-mentioned keys, the returned access token is included 
 This access token is often short-lived, expiring frequently. Upon expiration, a new access token can be obtained by re-sending the client credentials or, preferably, a refresh token.
 
 Refresh tokens are an important feature of the OAuth 2 updates, encouraging access tokens to expire often and, as a result, be continuously changed (in the original OAuth specification, access tokens could last for time periods in the range of years). When a refresh token is used to generate a new access token, it typically expires any previous access tokens.
-
+____________________________________________________________________
 ### Authorization Code Grant
 
 This flow is one of the most common implementations of OAuth and will look familiar if you’ve ever signed into a web application with Google or Facebook. It is similar to the OAuth flow described earlier with an added step linking the requesting application to the authentication.
@@ -1944,7 +1944,7 @@ The requesting application then takes this code and submits it to the authentica
 To avoid exposing the client ID and secret, this step of the flow should be done on the server side of the requesting application.
 
 Since tokens are tied both to users and requesting applications, the API has a great deal of control over limiting access based on user behavior, application behavior, or both.
-
+____________________________________________________________________
 ### Implicit Grant
 
 The previous two methods cause the client secret key to be exposed, so they need to be handled server-side. Some applications may need to access an OAuth API but don’t have the necessary server-side capabilities to keep this information secure.
@@ -1954,7 +1954,689 @@ The Implicit Grant OAuth flow was designed for this very use case. This flow pro
 The result of this interaction is an access token, and typically no refresh token. The access token is then used by the application to make additional requests to the service, but is not sent to the server side of the requesting application.
 
 This flow allows applications to use OAuth APIs without fear of potentially exposing long-term access to a user or application’s information.
-
+____________________________________________________________________
 ## Conclusion
 
-OAuth provides powerful access to a diverse set of sites and information. By using it correctly, you can reduce sign-up friction and enrich user experience in your applications.
+OAuth provides powerful access to a diverse set of sites and information. By using it correctly, you can reduce sign-up friction and enrich user experience in your applications
+____________________________________________________________________
+
+# Inline Styles
+
+Since JSX imitates HTML we can functionally add *inline styles* in a similar way.
+
+```<h1 style={{ color: 'red' }}>Hello world</h1>```
+
+By injecting JavaScript into our JSX element we can create an inline styling for that element.
+
+Notice the double curly braces? Remember that when we inject JavaScript into JSX we have to contain in within curly braces, and when we style a JSX element we need to define those rules in an *object literal*.
+
+The outer braces say "everything between us should be read as JavaScript, not JSX".
+
+The inner braces say "this is a JavaScript object literal".
+____________________________________________________________________
+
+## Make a Style Object Variable
+
+However, providing an inline style for every element can be obnoxious especially if we want to use more than just a few styles.
+
+An alternative would be to store a style object in a variable, and then inject that variable into JSX.
+
+```
+const style = {
+  color: 'darkcyan',
+  background: 'mintcream'
+};
+```
+
+Which we can then apply to a JSX element like so:
+
+```
+ <h1 style={styles}>
+        Hello world
+ </h1>
+```
+
+Defining a variable named `style` in a top-level scope would be a very bad idea in JavaScript environments, however, in React, it's totally fine.
+
+Remember that every file (module) is invisible to other files unless we export/import them. You could have 100 different files, all with global variables named `style`, and there could be no conflicts.
+____________________________________________________________________
+
+## Style Name Syntax
+
+In regular JS, style *names* are written in hyphenated-lowercase:
+
+```
+const styles = {
+  'margin-top': '20px',
+  'background-color': 'green'
+};
+```
+
+In React, those same names are instead written in camelCase
+
+```
+const styles = {
+  marginTop: '20px',
+  backgroundColor: 'green'
+};
+```
+
+This has zero effect on style property *values*, only on style property *names*.
+____________________________________________________________________
+
+## Style Value Syntax
+
+In regular JS, style values are almost always strings. Even if the style value is numeric, you have to write it as a string so that you can specift a unit, like `px` or `%`.
+
+In React, if you write a style value as a number then the unit `px` is assumed.
+
+So if we wanted a font size of 30px we could write
+
+```{ fontSize: 30 }```
+
+But if we wanted to use a unit other than px, we coan use a string like 
+
+``` { fontSize : "2em" } ```
+
+However, there are a few styles that *do not* assume `px`, which you can find more about [here](https://github.com/facebook/react/blob/4131af3e4bf52f3a003537ec95a1655147c81270/src/renderers/dom/shared/CSSProperty.js#L15-L59)
+____________________________________________________________________
+
+## Share Styles Across Multiple Components
+
+What if we want to reuse styles for several different components?
+
+One way to make styles *reusable* is to keep them in a separate JS file. This file should *export* the styles that you want to use via *import*. Then we can `import` the styles into any component that wants them.
+
+From there, we can access the whole imported object to style an element or we can use dot notation to access specific properties within the imported object.
+____________________________________________________________________
+
+# Separate Container Components From Presentational Components
+
+As we build our React application, we might realize that one component has too many responsibilities - but how do we know when we've reached that point?
+
+Separating container components from presentational components helps to answer that question.
+
+It shows you when it might be a good time to divide a component into smaller components. It also shows you how to perform that division.
+____________________________________________________________________
+
+## Create Container Component
+
+Separating container components from presentational components is a popular React programming pattern.
+
+We are applying the same concepts learned previously with Stateless Components inheriting from Stateful Components.
+
+If a component has a `state`, makes calculations based on `props`, or manages any other complex logic, then that component shouldn't also have to render JSX.
+
+The functional part of a component (state, calculations, etc) can be separated into a *container component*.
+____________________________________________________________________
+
+## Separate Presentational Component
+
+The presentational component's only job is to contain JSX. It should be an exported component and will not render itself because a presentational component will always get rendered by a container component.
+
+For example, if we have two components `Presentational` and `Container` then `Presentational` must export the component class (or function, when applicable)
+
+```export class Presentational extends Component {```
+
+And `Container` must import that component
+
+```import { Presentational } from 'Presentational.js';```
+____________________________________________________________________
+
+## Render Presentational Component in Container Component
+
+Once we have imported the Presentational component into our Container component, we render the Presentational component 
+
+```
+ReactDOM.render(
+    <Presentational />,
+    document.getElementById('app)
+);
+```
+____________________________________________________________________
+
+## Summary
+
+- Components should have one job. If Component A  handles the state, props, caluclations, etc, then that should be its only job. If we want to present (read: display) Component A then we should use Component B to render that component to the screen.
+
+- The *presentational* component should be responsible for **presenting** the component(s) to the screen and the *container* components should **contain** all the logic needed to decide what should be displayed.
+
+- *Presentational* components will be `export`ed while *container* components will `import` those components.
+
+In this programming pattern, the container component does the work of figuring out what to display. The presentational component does the work of actually displaying it. If a component does a significant amount of work in both areas, then that’s a sign that you should use this pattern!
+
+Learn more here:
+
+[Container Components](https://medium.com/@learnreact/container-components-c0e67432e005)
+
+[Presentational and Container Components](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0)
+____________________________________________________________________
+
+# propTypes
+
+`propTypes` are useful for two reasons:
+
+1. What's known as *prop validation* - this ensures that your `props` are doing what they're supposed to be doing. If `props` are missing, or if they're present but are not what you're expecting, then a warning will print in the console.
+
+2. *Documentation*. Documenting `props` will make it easier to glance at a file and quickly understand the component class inside. When you have a lot of files - and you will - this can be a huge benefit.
+____________________________________________________________________
+
+## Apply PropTypes
+
+In order to start using `propTypes` we need to import the `prop-types` library
+
+```import PropTypes from 'prop-types';```
+
+Now, we can declare `propTypes` as a static property for a component *after* the component has been defined.
+
+```
+class MyComponent extends React.Component {
+...
+}
+
+MyComponent.propTypes = {
+    propA: PropTypes.string,
+    propB: PropTypes.number,
+    propC: PropTypes.array
+}
+
+```
+Notice that the value of `propTypes` is an object, not a function. Each `prop` in our `propTypes` object represents the `props` that our component class expects to receive. 
+
+For each `prop` that your component class expects to receive there can be only one property on your `propTypes` object. Meaning that if our component class expects a prop named `color` we can only have one property `color:  propType.string`. We **cannot** have `color: propType.string` AND `color: propType.number`.
+____________________________________________________________________
+
+## Add Properties to PropType
+
+The *name* of each property in a `propTypes` object should be the name of an expected `prop`.
+
+```message: PropTypes.string```
+
+This tells us that we expect a prop with the name `message`
+
+The *value* of each property in a `propTypes` object should fit this pattern:
+
+```PropTypes.expected_data_type_goes_here```
+
+Since the prop `message` is presumably going to be a string, we chose `PropTypes.string`.
+
+If we are expecting a *boolean* or a *function* as a data type, then we abbreviate with `bool` and `func`, respectively. (e.g. `PropTypes.bool` and `PropTypes.func`)
+
+Also notice the difference in capitalization between `propTypes` object and `PropTypes` data type declaration.
+
+Each property in a `propTypes` object is called `propType`. Take a look at the following `propTypes` object:
+
+```
+Runner.propTypes = {
+  message:   PropTypes.string.isRequired,
+  style:     PropTypes.object.isRequired,
+  isMetric:  PropTypes.bool.isRequired,
+  miles:     PropTypes.number.isRequired,
+  milesToKM: PropTypes.func.isRequired,
+  races:     PropTypes.array.isRequired
+};
+```
+
+When we add `.isRequired` to a `propType` then we will get a console warning if that `prop` *is not* sent.
+____________________________________________________________________
+
+## PropTypes in Function Components
+
+Remember *function components*? Here's a brief refresher on how to create one:
+
+```
+// Normal way to display a prop:
+export class MyComponentClass extends React.Component {
+  render() {
+    return <h1>{this.props.title}</h1>;
+  }
+}
+
+// Functional component way to display a prop:
+export const MyComponentClass = (props) => {
+  return <h1>{props.title}</h1>;
+}
+```
+
+So, how do we write `propTypes` for a function component?
+
+Turns out the process is fairly similar. To write `propTypes` for a function component you define a `propTypes` object as a property of the function component itself. Here's what that looks like:
+
+```
+const Example = (props) => {
+  return <h1>{props.message}</h1>;
+}
+ 
+Example.propTypes = {
+  message: PropTypes.string.isRequired
+};
+```
+____________________________________________________________________
+
+# React Forms
+
+In a typical, non-React environment, a user fills out a form's input fields and then hits a "submit" button, sending all of the information simultaneously. The server does not know what information is being input into the form's fields *until* that submit button is hit.
+
+In React, as in many other JS environments, this is not the best way of doing things.
+
+The problem is the discrepancies between what the user has actually typed into the form and what the server *thinks* is currently typed in the form.
+
+If the form thinks the user has typed on thing, but the server thinks that the user has typed something different - and then during that time a *third* part of the website needs to know what the user has typed - it could ask the form or the server and get two completely different answers.
+
+In a complex JavaScript app with many moving, interdependent parts, this kind of conflict can easily lead to problems.
+
+In a React form, you want the server to know about every new character or deletion *as soon as it happens*. That way, your screen will always be in sync with the rest of the application.
+____________________________________________________________________
+
+## Input onChange
+
+A traditional form does not update the server until a user hits "submit" - but we want to update the server **any time a user enters or deletes any character**.
+
+Say we have a component class, `Input`, which renders an `<input />` element. We want out `<input />` element to recognize whenever there has been some kind of change to the input form.
+
+We can do so by giving the `<input />` element an `onChange` attribute/event listener.
+
+```<input onChange={this.handleUserInput} />```
+____________________________________________________________________
+
+## Input Event Handler
+
+Now, in order for that to work, we need to create an event handler function.
+
+The function should take an event as a parameter and then set the component class' state based on the event being passed in. For example:
+
+```
+// inside Input component
+
+handleUserInput (e) {
+    this.setState({
+      userInput: e.target.value
+    })
+  }
+```
+
+The above method `handleUserInput` takes an event, `e`, as an argument. When the method is invoked, it calls `.setState()` which then sets the state of `userInput` as `e.target.value`.
+
+- The `e` is the event argument that is being passed in.
+- `.target` is a property of event objects. When we access the `target` property, it returns the element that triggered the event.
+	- in this case, the event was `onChange`
+	- the element that was listening for `onChange` was `<input />`
+- `.value` returns the *value* of the event - in this case what's being typed/deleted.
+____________________________________________________________________
+
+## Set the Input's Initial State
+
+Since we're using `this.setState` that means that we need an initial state! What should the initial value of `this.state` be?
+
+Well, continuing with our example, `this.state.userInput` will be displayed in the `<input />` component - so what should the *initial* text be when a user first views the input form?
+
+In this case, it should be blank! Otherwise, it would look like someone had already typed something.
+
+Remember that we set a component's default/initial state inside of the constructor method of that component, for example:
+
+```
+// inside Input component
+
+constructor(props) {
+    super(props);
+    this.state = {
+        userInput: '',
+    }
+}
+```
+
+We also need to bind the `handleUserInput` method to the current component/current value of `this`.
+
+```this.handleUserInput = this.handleUserInput.bind(this);```
+
+So our constuctor method should look like:
+
+```
+constructor(props) {
+    super(props);
+    this.state = {
+        userInput: '',
+    };
+    this.handleUserInput = this.handleUserInput.bind(this);
+}
+```
+____________________________________________________________________
+
+## Update an Input's Value
+
+Within this example, we've accomplished two things:
+
+When a user changes the text inside of the `<input />` component, then that will trigger a *onChange* event which in turn calls `handleUserInput`.
+
+`handleUserInput` will set `this.state.userInput` equal to whatever text is currently in the input field.
+
+However, the `<input />` *element's* value has not been changed - The only thing that has been changed is `this.state.userInput` of the *component*, `Input`.
+
+We need to set the `<input />` element's value to be equal to the `Input` component's `userInput` state.
+
+```
+// inside the render method of the Input component class
+
+<input onChange={this.handleUserInput} value={this.state.userInput} />
+```
+
+Now, if we want to display or check the current text that is in the `<input />` form element we can just access `{this.state.userInput}`.
+
+For instance:
+
+```
+render() {
+    return (
+      <div>
+        <input onChange={this.handleUserInput} type="text" value={this.state.userInput} />
+        <h1>{this.state.userInput}</h1>
+      </div>
+    );
+  }
+}
+```
+This would render whatever is currently typed inside of the `<input />` form on the screen
+____________________________________________________________________
+
+## Controlled vs Uncontrolled
+
+Controlled Components vs. Uncontrolled Componments is a topic that you should be familiar with.
+
+An *uncontrolled component* is a component that maintains its own internal state.
+
+A *controlled component* is a component that does not maintain any internal state.
+
+Since a controlled component has no state, it must be *controlled* by someone else.
+
+For example, think of a typical `<input type='text' />` element. It appears on screen as a text box and if we need to know what text is currently in the box then we can ask the <input /> element - possibly with some code like this:
+
+```
+let input = document.querySelector('input[type="text"]');
+ 
+let typedText = input.value; // input.value will be equal to whatever text is currently in the text box.
+```
+
+The important thing here is that the `<input />` element *keeps track of its own text*. You can ask it what its text is at any time and it will be able to tell you.
+
+The fact that `<input />` keeps track of information makes it an *uncontrolled component* - it maintains its own internal state by remembering data about itself.
+
+A *controlled component*, on the other hand, has no memory. If you ask it for information about itself, then it will have to get that information through `props`. Most React components are *controlled*.
+
+However, in React, when you give an `<input />` a `value` attribute then something strang happens: the `<input />` BECOMES controlled. It stops using its internal storage. This is a more 'React' way of doing things.
+
+More information about controlled vs. uncontrolled components are in the [React Forms documentation](https://reactjs.org/docs/forms.html).
+____________________________________________________________________
+
+## A Few Final Notes
+
+Notice that we did not implement a submit button. We didn't even use a `<form>` element - it was just an `<input />` element.
+
+That won't always be the case. Sometimes we'll still want to use a `<form>` element and a submit button - especially when we need to differentiate between a finished form and an in-progress form.
+
+But in some cases, its fine to have a 'form' that is really just an input field. That is because, unlike in traditional form paradigm, in React you re-send your form on every single character change - this removes the need to ever "submit" anything.
+____________________________________________________________________
+
+# Uncontrolled Components - continued 
+
+## *Controlled* Component recap
+
+While form elements like `<input />`, `<textarea />`, etc are capable of managing their own *internal* (read: element) state, in React we typically prefer to maintain any changable state values within the state property of our *components*.
+
+To gain *control* over a form element's internal state, we can provide a `value` attribute on the `<input />` element and assign a component state variable to it.
+
+When we use this approach, we are able to perform immediate validation on every change to the form. This is useful when we want whatever is typed into the form to meet a set of criteria, for instance if we wanted to create a form for a phone number we want to prevent any characters other than numbers from being typed and we also want to make sure the phone number is 10 characters long.
+
+Although change-by-change validation like this is common, in some cases we may only care about a form's value *after* it has been submitted. In these scenarios, keeping the input value up to date on every change can feel like overkill - this is where uncontrolled components come into play.
+
+## Uncontrolled Components
+
+An uncontrolled component is a form element that maintains its own state in the DOM. Rather than using a component’s own state value to maintain that element’s input value and updating it on every change, we can instead use a [ref](https://reactjs.org/docs/refs-and-the-dom.html) to retrieve the value directly from the DOM only when we need it.
+
+Refs provide a way to access DOM nodes or React elements created in the render method.
+
+To create an uncontrolled component, we begin by creating a ref using the `React.createRef()` method. This method returns an object with a `.current` property that refers to the DOM node it is bound to. This ref object is bound to a form element using the `ref` attribute and whenever the value of that form element needs to be retrieved, simply refer back to the ref object’s `.current` property.
+
+For example:
+
+```
+const numberRef = React.createRef();
+ 
+// ...
+ 
+<input type="text" ref={numberRef} />
+```
+
+The `numberRef` object is created and then bound to the `<input />` form element.
+
+We can then use `numberRef.current.value` to retrieve the value of that form element from the DOM node stored in `numberRef.current`
+
+> Note that `<input>` DOM nodes are instances of `HTMLInputElement` so their values can be retrieved using the `.value` property. Other form elements may use different properties to access their input values.
+
+## When Should You Use An Uncontrolled Component?
+
+In some ways, creating uncontrolled components is faster and easier than creating controlled components. However, given their departure from the React pattern of storing mutable data in a component’s state, controlled components are still recommended for most scenarios.
+
+There is one situation in which uncontrolled components must always be used: `<input>` form elements with the `type="file"` attribute. The value for this type of `<input>` form element can only be set by a user, and not programmatically, and therefore the only way to retrieve this value is through a ref.
+____________________________________________________________________
+
+## Summary
+
+The majority of the time we should use *controlled* components when creating React applications. This aligns with React's pattern of storing mutable (read: changable) data in a component's state and allows for change-by-change tracking of input values.
+
+However, there is a time and place for using *uncontrolled* components. If you only need access to the value of the form on submission or are using a `<input type='file'>` form element, then uncontrolled components can be a valuable tool.
+____________________________________________________________________
+
+# React Component Lifecycle
+
+We’ve seen that React components can be highly dynamic. They get created, rendered, added to the DOM, updated, and removed. All of these steps are part of a component’s *lifecycle*.
+
+The component lifecycle has three high-level parts:
+
+1. *Mounting*: When the component is being initialized and put into the DOM for the first time
+2. *Updating*: When the component updates as a result of changed state or changed props
+3. *Unmounting*: When the component is being removed from the DOM
+
+Every React component that you see is mounted - if a component is never mounted, you don't see it.
+
+Most components are *updated* at some point. A purely static component, like a logo, might not ever update - but if a component's state changes or if different props are passed to it then it updates.
+
+When a component is removed from the DOM it is *unmounted*. For example, if we have a button that hides a component chances are that the component will be unmounted.
+
+If an app has multiple screens, its likely that each screen (and all of its child components) will be unmounted. If a component is "alive" for the entire lifestime of your app (for instance, a top-level `<App />` component or a persistent navigation bar), it won't be unmounted. But most components can get unmounted one way or another.
+
+Each component instance has it's own lifecycle. For example, if you have 3 buttons on a page then there are 3 component instances - each with its own lifecycle. However, once a component instance is unmounted that's it - it will never be re-mounted, or updated again, or unmounted. We can instantiate another (new) button component, but it will not be the same instance of the unmounted component.
+
+![component lifecycle visualization](https://content.codecademy.com/courses/React/react_diagram-lifecycle-flow.png)
+____________________________________________________________________
+
+## Intro to Lifecycle Methods
+
+React components have several methods, called lifecycle methods, that are called at different parts of a component’s lifecycle. This is how you, the programmer, deal with the lifecycle of a component.
+
+You may not have known it, but you’ve already used two of the most common lifecycle methods: `constructor()` and `render()`! `constructor()` is the first method called during the mounting phase. `render()` is called later during the mounting phase, to render the component for the first time, and during the updating phase, to re-render the component.
+
+Notice that lifecycle methods don’t necessarily correspond one-to-one with part of the lifecycle. `constructor()` only executes during the mounting phase, but `render()` executes during both the mounting and updating phase.
+____________________________________________________________________
+
+## componentDidMount
+
+Say we wanted to create a component that displays the current time that also updates in real time.
+
+We would initiate the `state` of the component with a `date` property like so
+
+```
+// in the constructor
+this.state = { date: new Date() };
+```
+
+and then we could display it on the screen by using the `render()` method
+
+```
+// in render()
+return <div>{this.state.date.toLocaleTimeString()}</div>;
+```
+
+But this would only display the current time at the time of the component's instantiation - it would not update it in real time. So where do we put the logic that would change the time displayed in real time?
+
+`render()` ? It executes during the mounting and the updating phase but its generally a bad idea to set up any kind of side-effect like this in the `render()` method as it can create subtle bugs in the future.
+
+`constructor()` ? Also no, because it only executes during the mounting phase. We should also generally avoid side-effects like this in constructors because it violates something called the **[Single Responsibility Principle](https://en.wikipedia.org/wiki/Single-responsibility_principle)**. In short, its not a constructor's responsibility to start side-effects.
+
+During the mounting phase the `constructor()` method is called first, then the `render()` method, and then `componentDidMount()` - this is where we should nest that logic.
+
+> Note that another method, `[getDerivedStateFromProps()](https://reactjs.org/docs/react-component.html#static-getderivedstatefromprops)` is called between `constructor()` and `render()`, but it is very rarely used and usually isn't the best way to achieve your goals so we won't cover that here.
+
+`componentDidMount()` allows us to execute React code when the component is already placed in the DOM. In the case of this clock component, we would write something like this:
+
+```
+componentDidMount() {
+    const oneSecond = 1000;
+    setInterval(() => {
+      this.setState({ date: new Date() });
+    }, oneSecond);
+  }
+```
+We declare a local variable `oneSecond` which equals 1000. Then we call `setInterval` which takes a callback function that allows us to update `this.state.date` every 1000ms - or every second.
+____________________________________________________________________
+
+## componentWillUnmount
+
+Continuing using this clock example, we have an important issue we need to address: We never told the interval to stop.
+
+It will continue to run that function forever - or at least until the user leaves/refreshes the page.
+
+When the component is unmounted (in other words, removed from the page), that timer will keep on ticking and trying to update the state of a component that is effectively gone. This means that your users will have some JS code running unnecessarily - which will hurt the performance of your app.
+
+React will log a warning that looks something like this:
+
+```
+Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in the componentWillUnmount method.
+```
+
+Imagine if the clock gets mounted and unmounted hundreds of times—eventually, this will cause your page to become sluggish because of all of the unnecessary work. You’ll also see warnings in your browser console. Even worse, this can lead to subtle, annoying bugs.
+
+All this bad stuff can happen if we fail to clean up a side-effect of a component. In our case this is a call to `setInterval()`, but components can have lots of other side-effects: loading external data with AJAX, doing manual tweaking of the DOM, setting a global value, and more. We try to limit our side-effects, but it’s difficult to build an interesting app with truly zero side-effects.
+
+*In general, when a component produces a side-effect, you should remember to clean it up.*
+
+JavaScript gives us the `clearInterval()` function. `setInterval()` can return an ID which we can then pass into `clearInterval()` to clear it.
+
+Let’s introduce a new lifecycle method: `componentWillUnmount()`. `componentWillUnmount()` is called in the unmounting phase, right before the component is completely destroyed. It’s a useful time to clean up any of your component’s mess.
+
+Here's the code we would want to use:
+
+```
+componentDidMount() {
+const oneSecond = 1000;
+this.intervalID = setInterval(() => {
+  this.setState({ date: new Date() });
+}, oneSecond);
+}
+ 
+componentWillUnmount()  {
+clearInterval(this.intervalID);
+}
+```
+At a high level, we want to continue to set up our `setInterval()` in `componentDidMount()`, but then we want to clear that interval when the clock is unmounted.
+
+In our case, we use it to clean up the clock’s interval.
+____________________________________________________________________
+
+## componentDidUpdate
+
+Remember the three parts of a component's lifecycle:
+
+1. *Mounting*
+2. *Updating*
+3. *Unmounting*
+
+So far we've covered mounting (`constructor()`, `render()`, and `componentDidMount()`) as well as unmounting (`componentWillUnmount()`) - now lets look at the updating phase.
+
+An update is caused by changes to props or state. We've already seen this happen before with `setState()` - this triggered an update. Every time you change the props passed to a component you also trigger an update.
+
+When a component updates it calls [several methods](https://reactjs.org/docs/react-component.html#updating) but only two are commonly used.
+
+The first is `render()` - which we've seen in every React component. When a component's props or state changes, `render()` is called.
+
+The next one we'll cover is `componentDidUpdate()`. Just like how `componentDidMount()` is a good place for mount-phase setup, `componentDidUpdate()` is a good place for update-phase work.
+
+Say we wanted to be able to toggle our clock component to display two different formats:
+
+1. "hh:mm:ss" The time in our local time zone
+2. "yyyy:mm:dd hh:mm:ss:ms" The date and time in UTC 
+
+
+In the example below, we have a `prop`, `isPrecise` which toggles between `true` and `false` to let us know which format to display.
+
+We also have a method `startInterval()` which sets the delay in miliseconds when we use the JavaScript method `setInterval()` depending on what the value of the prop `isPrecise` is.
+
+When the component is mounted, we call `startInterval()` which will display the correct time and update with the correct delay regardless of which time format we mount the component in. (mounting phase)
+
+We also have logic to handle clearing the interval when we unmount the component. (unmounting phase)
+
+And we also make use of the method `componentDidUpdate()` which allows us to adjust our clock component depending on whether we are in "precise" mode or not. (updating phase)
+
+```
+export class Clock extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { date: new Date() };
+  }
+  render() {
+    return (
+      <div>
+        {this.props.isPrecise // isPrecise is a bool
+          ? this.state.date.toISOString()
+          : this.state.date.toLocaleTimeString()}
+      </div>
+    );
+  }
+
+  startInterval() {
+    let delay;
+
+    if (this.props.isPrecise) {
+      delay = 100;
+    } else delay = 1000;
+
+      this.intervalID = setInterval(() => {
+        this.setState({ date: new Date() });
+      }, delay);
+  }
+
+  componentDidMount() {
+    this.startInterval();
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.isPrecise === prevProps.isPrecise) {
+      return;
+    } else {
+      clearInterval(this.intervalID);
+      this.startInterval()
+      }
+  }
+}
+```
+____________________________________________________________________
+
+## Summary
+
+The three major phases of a component's lifecycle:
+
+1. Mounting: When the component is being initialized and put into the DOM for the first time. This includes `constructor()`, `render()`, and `componentDidMount()`.
+
+2. Updating: When the component updates as a result of changed state or changed props. We know that `render()` and `compondentDidUpdate()` are called during this phase.
+
+3. Unmounting: When the component is being removed from the DOM. We know that `componentWillUnmount()` is called here and is used to clean things up and keep our app running efficiently.
+
+Remember that we can set up side-effects and remove them when we need to. This will help to make more robust, complex components.
+
+Use [this website](https://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/) to help visualize the phases of a component's lifecycle.
+
+We can also refer to the [State and Lifecycle documentation](https://reactjs.org/docs/state-and-lifecycle.html) and the [React.Component documentation](https://reactjs.org/docs/react-component.html) to learn more.
+____________________________________________________________________
